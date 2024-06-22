@@ -22,7 +22,8 @@ const scrapeLogic = async (req, res) => {
         });
         const page = await browser.newPage();
         // Seite aufrufen
-        await page.goto('https://sport.htw-berlin.de/angebote/aktueller_zeitraum/index.html');
+        await page.goto('https://sport.htw-berlin.de/angebote/aktueller_zeitraum/index.html', { waitUntil: 'networkidle2', timeout: 60000 });
+
 
         // Wartezeit, um sicherzustellen, dass alle Elemente geladen sind
         await page.waitForSelector('dd');
