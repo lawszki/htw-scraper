@@ -26,9 +26,9 @@ const scrapeLogic = async (req, res) => {
 
 
         // Wartezeit, um sicherzustellen, dass alle Elemente geladen sind
-        await page.waitForSelector('dd');
+        // await page.waitForSelector('dd');
 
-        // Verwende querySelectorAll, um alle <dd> Elemente zu erhalten, die Links enthalten
+        // Verwendet querySelectorAll, um alle <dd> Elemente zu erhalten, die Links enthalten
         const links = await page.evaluate(() => {
             const ddElements = document.querySelectorAll('dd');
             const linkList = [];
