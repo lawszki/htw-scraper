@@ -18,7 +18,7 @@ const scrapeLogic = async (req, res) => {
             executablePath: process.env.NODE_ENV === "production"
                 ? process.env.PUPPETEER_EXECUTABLE_PATH
                 : puppeteer.executablePath(),
-            protocolTimeout: 120000 // Setzen Sie das globale Timeout auf 120 Sekunden
+            protocolTimeout: 1200000 // Setzen Sie das globale Timeout auf 120 Sekunden
         });
 
         const page = await browser.newPage();
