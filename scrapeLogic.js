@@ -3,7 +3,7 @@ require("dotenv").config();
 
 const scrapeLogic = async (req, res) => {
     function cleanText(text) {
-        return text.replace(/\s[(].*/, '').trim();
+        return text.replace(/\s*[(*].*/, '').trim();
     }
 
     let browser;
@@ -43,10 +43,10 @@ const scrapeLogic = async (req, res) => {
         const allQuotes = [];
 
         for (const link of links) {
-            await page.goto('https://sport.htw-berlin.de/angebote/aktueller_zeitraum/'${link.href}, { waitUntil: 'networkidle2', timeout: 60000 });
+            await page.goto(`https://sport.htw-berlin.de/angebote/aktueller_zeitraum/${link.href}`, { waitUntil: 'networkidle2', timeout: 60000 });
 
             const quotes = await page.evaluate((text) => {
-                const quoteElements = document.querySelectorAll('.bs_even, .bs_odd, .bs_angblock');
+                const quoteElements = document.querySelectorAll('.bs_even, .bs_odd');
                 const quoteArray = [];
                 for (const quoteElement of quoteElements) {
                     const quoteTag = quoteElement.querySelector(".bs_stag").innerText;
@@ -54,15 +54,13 @@ const scrapeLogic = async (req, res) => {
                     const quoteZeit = quoteElement.querySelector(".bs_szeit").innerText;
                     const quoteZeitraum = quoteElement.querySelector(".bs_szr").innerText;
                     const quoteLeitung = quoteElement.querySelector(".bs_skl").innerText;
-                    const quoteBeschreibung = quoteElement.querySelector(".bs_kursbeschreibung").innerText;
                     quoteArray.push({
-                      //  titel: text,
+                        titel: text,
                         tag: quoteTag,
                         ort: quoteOrt,
                         zeit: quoteZeit,
                         zeitraum: quoteZeitraum,
                         leitung: quoteLeitung,
-                        beschreibung: quoteBeschreibung
                     });
                 }
                 return quoteArray;
@@ -71,7 +69,6 @@ const scrapeLogic = async (req, res) => {
             allQuotes.push(...quotes);
         }
 
-        console.log(allQuotes)
         res.json(allQuotes);
     } catch (err) {
         console.error(err);
