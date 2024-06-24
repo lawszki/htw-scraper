@@ -3,7 +3,6 @@ require("dotenv").config();
 
 const scrapeLogic = async (req, res) => {
     function cleanText(text) {
-        // Verwende einen regulären Ausdruck, um den Text zu bereinigen und nur den Teil vor '(' oder '*' zu behalten
         return text.replace(/\s*[(*].*/, '').trim();
     }
 
@@ -17,18 +16,15 @@ const scrapeLogic = async (req, res) => {
                 "--no-zygote"
             ],
             executablePath: process.env.NODE_ENV === "production"
-                ?  process.env.PUPPETEER_EXECUTABLE_PATH
+                ? process.env.PUPPETEER_EXECUTABLE_PATH
                 : puppeteer.executablePath(),
+            protocolTimeout: 120000 // Setzen Sie das globale Timeout auf 120 Sekunden
         });
+
         const page = await browser.newPage();
-        // Seite aufrufen
-        await page.goto('https://sport.htw-berlin.de/angebote/aktueller_zeitraum/index.html', { waitUntil: 'networkidle2', timeout: 60000 });
 
+        await page.goto('https://sport.htw-berlin.de/angebote/aktueller_zeitraum/index.html');
 
-        // Wartezeit, um sicherzustellen, dass alle Elemente geladen sind
-        // await page.waitForSelector('dd');
-
-        // Verwendet querySelectorAll, um alle <dd> Elemente zu erhalten, die Links enthalten
         const links = await page.evaluate(() => {
             const ddElements = document.querySelectorAll('dd');
             const linkList = [];
@@ -44,12 +40,10 @@ const scrapeLogic = async (req, res) => {
             return linkList;
         });
 
-        // Alle Ergebnisse sammeln
         const allQuotes = [];
 
-        // Durchläuft jeden Link und führt die Abfrage aus
         for (const link of links) {
-            await page.goto(`https://sport.htw-berlin.de/angebote/aktueller_zeitraum/${link.href}`);
+            await page.goto(`https://sport.htw-berlin.de/angebote/aktueller_zeitraum/${link.href}`, { waitUntil: 'networkidle2', timeout: 60000 });
 
             const quotes = await page.evaluate((text) => {
                 const quoteElements = document.querySelectorAll('.bs_even, .bs_odd');
@@ -61,7 +55,7 @@ const scrapeLogic = async (req, res) => {
                     const quoteZeitraum = quoteElement.querySelector(".bs_szr").innerText;
                     const quoteLeitung = quoteElement.querySelector(".bs_skl").innerText;
                     quoteArray.push({
-                        titel: text, // Fügt den Text, Titel der Sportart aus der oberen Abfrage hinzu
+                        titel: text,
                         tag: quoteTag,
                         ort: quoteOrt,
                         zeit: quoteZeit,
@@ -70,12 +64,11 @@ const scrapeLogic = async (req, res) => {
                     });
                 }
                 return quoteArray;
-            }, cleanText(link.text)); // Bereinigten Text als Argument übergeben
+            }, cleanText(link.text));
 
             allQuotes.push(...quotes);
         }
 
-        // Ergebnisse als JSON zurückgeben
         res.json(allQuotes);
     } catch (err) {
         console.error(err);
