@@ -50,16 +50,16 @@ const scrapeLogic = async (req, res) => {
                 const quoteArray = [];
                 for (const quoteElement of quoteElements) {
                     const quoteTag = quoteElement.querySelector(".bs_stag").innerText;
-                 //   const quoteOrt = quoteElement.querySelector(".bs_sort").innerText;
-                 //   const quoteZeit = quoteElement.querySelector(".bs_szeit").innerText;
+                    const quoteOrt = quoteElement.querySelector(".bs_sort").innerText;
+                    const quoteZeit = quoteElement.querySelector(".bs_szeit").innerText;
                     const quoteZeitraum = quoteElement.querySelector(".bs_szr").innerText;
                     const quoteLeitung = quoteElement.querySelector(".bs_skl").innerText;
                     const quoteBeschreibung = quoteElement.querySelector(".bs_kursbeschreibung").innerText;
                     quoteArray.push({
-                        titel: text,
+                      //  titel: text,
                         tag: quoteTag,
-                      //  ort: quoteOrt,
-                      //  zeit: quoteZeit,
+                        ort: quoteOrt,
+                        zeit: quoteZeit,
                         zeitraum: quoteZeitraum,
                         leitung: quoteLeitung,
                         beschreibung: quoteBeschreibung
