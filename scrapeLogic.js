@@ -46,6 +46,18 @@ const scrapeLogic = async (req, res) => {
             await page.goto(`https://sport.htw-berlin.de/angebote/aktueller_zeitraum/${link.href}`, { waitUntil: 'networkidle2', timeout: 60000 });
 
             const quotes = await page.evaluate((text) => {
+                function replaceNewLinesAndFixPunctuation(text) {
+                    return text
+                        .replace(/\n/g, '.') // Ersetzt Zeilenumbrüche durch Punkte
+                        .replace(/\\/g, '')  // Entfernt Backslashes
+                        .replace(/\.\.+/g, '.') // Ersetzt mehrere Punkte durch einen Punkt
+                        .replace(/\. +\./g, '.') // Entfernt Leerzeichen zwischen Punkten
+                        .replace(/ +\./g, '.')  // Entfernt Leerzeichen vor Punkten
+                        .replace(/\. +/g, '. ') // Korrigiert Leerzeichen nach Punkten
+                        .replace(/\.([^\s])/g, '. $1') // Fügt Leerzeichen nach Punkten hinzu, falls nötig
+                        .trim();
+                }
+
                 const quoteElements = document.querySelectorAll('.bs_even, .bs_odd');
                 const quoteArray = [];
                 for (const quoteElement of quoteElements) {
@@ -63,7 +75,14 @@ const scrapeLogic = async (req, res) => {
                         leitung: quoteLeitung,
                     });
                 }
-                return quoteArray;
+
+                const descriptionElement = document.querySelector('.bs_kursbeschreibung');
+                const descriptionText = descriptionElement ? replaceNewLinesAndFixPunctuation(descriptionElement.innerText) : '';
+
+                return quoteArray.map(quote => ({
+                    ...quote,
+                    beschreibung: descriptionText
+                }));
             }, cleanText(link.text));
 
             allQuotes.push(...quotes);
@@ -72,7 +91,7 @@ const scrapeLogic = async (req, res) => {
         res.json(allQuotes);
     } catch (err) {
         console.error(err);
-        res.send("Da stimmt was nicht mit dem scraper!");
+        res.send("Da stimmt was nicht mit dem Scraper!");
     } finally {
         if (browser) {
             await browser.close();
