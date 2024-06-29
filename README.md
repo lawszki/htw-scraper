@@ -20,7 +20,7 @@ Dieses Repository wird verwendet von:
 
 ## Installation und Ausführung
 
-Um das Backend lokal zu installieren und auszuführen, führen Sie die folgenden Schritte aus:
+Um den Scraper lokal zu installieren und auszuführen, führen Sie die folgenden Schritte aus:
 
 Clone das Repository:
 ```bash
