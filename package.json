@@ -4,7 +4,7 @@
   "description": "scraper for hochschulsport htw",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "node index"
   },
   "author": "",
@@ -14,5 +14,8 @@
     "dotenv": "^16.0.3",
     "express": "^4.19.2",
     "puppeteer": "^22.12.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }
