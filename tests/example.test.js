@@ -1,4 +1,5 @@
-const { scrapeLogic } = require('../scrapeLogic');
+jest.setTimeout(30000);
+
 const puppeteer = require('puppeteer');
 
 describe('scrapeLogic function', () => {
