@@ -10,7 +10,7 @@ Der HTW Sraper ist zum scrapen der aktuellen Sportangebote der HTW Berlin da, en
 
 ## Nutzen
 
-Der Scraper dient der einfachheit um die aktuellen Angebote an Sportkursen automatisiert zu erhalten, damit können Updated auch autmatische gepatcht werden.
+Der Scraper dient der einfachheit um die aktuellen Angebote an Sportkursen automatisiert zu erhalten, damit können Updates auch autmatische gepatcht werden.
 
 ## Integration mit anderen Repositories
 
